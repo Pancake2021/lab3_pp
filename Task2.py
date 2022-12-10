@@ -9,12 +9,12 @@ def create_dir(dir_name: str) -> str:
     return dir_name
 
 
-def create_copy_dataset(dir_copy: str, annotation_name: str) -> None:
+def create_copy_dataset(dataset: str, dir_copy: str, annotation_name: str) -> None:
     create_dir(dir_copy)
-    for dataset_item in os.listdir("dataset"):
-        files_list = os.listdir(os.path.join("dataset", dataset_item))
+    for dataset_item in os.listdir(os.path.join(dataset,"dataset")):
+        files_list = os.listdir(os.path.join(dataset,"dataset", dataset_item))
         for file_name in files_list:
-            shutil.copy(os.path.join(os.path.join("dataset", dataset_item),
+            shutil.copy(os.path.join(os.path.join(dataset, "dataset", dataset_item),
                         file_name), os.path.join(dir_copy, f"{dataset_item}_{file_name}"))
         with open(os.path.join(dir_copy, annotation_name), mode="a", newline='') as file:
             file_writer = csv.writer(file, delimiter=",")
@@ -22,5 +22,5 @@ def create_copy_dataset(dir_copy: str, annotation_name: str) -> None:
                 file_writer.writerow([f"{dataset_item}_{file_name}", dataset_item])
 
 
-def run2(dir_copy: str, annotation_name: str) -> None:
-    create_copy_dataset(dir_copy, annotation_name)
+def run2(dataset: str, dir_copy: str, annotation_name: str) -> None:
+    create_copy_dataset(dataset, dir_copy, annotation_name)

@@ -8,12 +8,15 @@ import os
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QWidget
-
+from Task1 import run1
+from Task2 import run2
+from Task3 import run3
 
 class Ui_MainWindow(QWidget):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(300, 300)
+        self.dir = None
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
@@ -58,11 +61,24 @@ class Ui_MainWindow(QWidget):
         self.pushButton_5.setText(_translate("MainWindow", "Tsk3"))
 
         self.pushButton_3.clicked.connect(self.get_my_folder)
+        self.pushButton.clicked.connect(self.Task1)
+        self.pushButton_2.clicked.connect(self.Task2)
+        self.pushButton_5.clicked.connect(self.Task3)
 
     def get_my_folder(self):
         self.dir = QtWidgets.QFileDialog.getExistingDirectory(self, "Выбор датасета")
         os.chdir(self.dir)
         print(self.dir)
+
+    def Task1(self):
+        run1(self.dir,'cat','annotationCat')
+        run1(self.dir,'dog','annotationDog')
+
+    def Task2(self):
+        run2(self.dir, "datasetcopy","AnnotationTask2")
+
+    def Task3(self):
+        run3(self.dir, "AnnotationTask3", 'datasetcopy1')
 
 if __name__ == "__main__":
     import sys
