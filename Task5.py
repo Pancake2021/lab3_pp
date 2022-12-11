@@ -1,60 +1,44 @@
-import csv
 import os
 
 
-class IteratorTask1:
-    def __init__(self, path: str):
-        self.file_names = os.listdir(os.path.join('dataset', path))
+class IteratorTask5:
+    def __init__(self, dataset: str, classname: str, path: str):
+        self.pathdir = ""
+        self.classname = ""
+        self.names = []
+        self.limit = 0
         self.counter = 0
-        self.limit = len(self.file_names)
-        self.path = path
+        self.dataset = ""
+        self.init(dataset, classname, path)
 
     def __next__(self):
         if self.counter < self.limit:
             self.counter += 1
-            return os.path.join(self.path, self.file_names[self.counter-1])
+            return self.names[self.counter - 1]
         else:
             raise StopIteration
 
+    def init(self, dataset: str, classname: str, pathdir: str):
+        if not "dataset" in pathdir:
+            raise ("error")
+        self.pathdir = pathdir
+        self.classname = classname
+        self.names = os.listdir(os.path.join(dataset, self.pathdir, self.classname))
 
-class IteratorTask2:
-    def __init__(self, class_name: str,  path: str):
-        self.file_names = os.listdir(os.path.join(path))
-        for name in self.file_names:
-            if not class_name in name:
-                self.file_names.remove(name)
-
-        self.limit = len(self.file_names)
+        for i in self.names:
+            if not ".jpg" in i:
+                self.names.remove(i)
+        self.limit = len(self.names)
         self.counter = 0
-        self.path = path
 
-    def __next__(self):
-        if self.counter < self.limit:
-            self.counter += 1
-            return os.path.join(self.path, self.file_names[self.counter-1])
-        else:
-            raise StopIteration
-
-
-class IteratorTask3:
-    def __init__(self, class_name: str,  path: str, annotation_name: str):
-        self.file_names = list()
-        with open(os.path.join(path, annotation_name)) as file:
-            reader = csv.reader(file, delimiter=',')
-            for file_info in reader:
-                if file_info[1] == class_name:
-                    self.file_names.append()
-        for name in self.file_names:
-            if not class_name in name:
-                self.file_names.remove(name)
-
-        self.limit = len(self.file_names)
+    def clear(self):
         self.counter = 0
-        self.path = path
 
-    def __next__(self):
-        if self.counter < self.limit:
-            self.counter += 1
-            return os.path.join(self.path, self.file_names[self.counter-1])
-        else:
-            raise StopIteration
+    def setclassName(self, classname: str):
+        self.init(self.dataset, classname, self.pathdir)
+    def getclassName(self):
+       print(self.classname)
+
+
+    def setPath(self, pathdir: str):
+        self.init(self.dataset, self.classname, pathdir)

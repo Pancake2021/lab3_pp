@@ -7,10 +7,13 @@
 import os
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QWidget, QDialog, QLabel, QRadioButton, QMessageBox
 from Task1 import run1
 from Task2 import run2
 from Task3 import run3
+from Task5 import *
 
 class Ui_MainWindow(QWidget):
     def setupUi(self, MainWindow):
@@ -64,6 +67,7 @@ class Ui_MainWindow(QWidget):
         self.pushButton.clicked.connect(self.Task1)
         self.pushButton_2.clicked.connect(self.Task2)
         self.pushButton_5.clicked.connect(self.Task3)
+        self.pushButton_4.clicked.connect(self.secondwind)
 
     def get_my_folder(self):
         self.dir = QtWidgets.QFileDialog.getExistingDirectory(self, "Выбор датасета")
@@ -79,6 +83,85 @@ class Ui_MainWindow(QWidget):
 
     def Task3(self):
         run3(self.dir, "AnnotationTask3", 'datasetcopy1')
+
+    def secondwind(self):
+        wind = secondwindow(self)
+        wind.exec()
+
+class secondwindow(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super(secondwindow, self).__init__(parent)
+        self._iterator = IteratorTask5("/Users/glebpankeev/Desktop/lab3_pp", "cat", "dataset")
+        self._pixelmap = QPixmap('.jpg')
+        self.resize(400, 400)
+        self.verticalLayout = QtWidgets.QGridLayout(self)
+        self.verticalLayout.setObjectName('verticalLayout')
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.setGeometry(QtCore.QRect(200,400,100, 50))
+        self.verticalLayout.setSpacing(10)
+        self.setLayout(self.verticalLayout)
+        self.setGeometry(200,200,200,200)
+
+        self.pushButton_1 = QtWidgets.QPushButton(self)
+        self.pushButton_1.setObjectName("pushButton_1")
+        self.pushButton_1.setGeometry(QtCore.QRect(200,100,100,20))
+
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("ImgTsk")
+        self.pushButton.setText("Next")
+        self.pushButton.clicked.connect(self.nextButt)
+        self.pushButton_1.setText("Close")
+        self.pushButton_1.clicked.connect(self.buttClose)
+        self.verticalLayout.addWidget(self.pushButton_1)
+
+        pix = QPixmap("/Users/glebpankeev/Desktop/lab3_pp/dataset/cat/0000.jpg").scaledToWidth(400).scaledToHeight(400)
+        self._lable = QLabel(self)
+
+        self._lable.setPixmap(pix)
+
+        self.verticalLayout.addWidget(self._lable)
+
+        self.radio_button_1 = QRadioButton('cat')
+        self.radio_button_1.setChecked(True)
+        self.radio_button_1.setAccessibleName("cat")
+
+        self.radio_button_2 = QRadioButton('dog')
+        self.radio_button_2.setAccessibleName("dog")
+
+        self.verticalLayout.addWidget(self.radio_button_1)
+        self.verticalLayout.addWidget(self.radio_button_2)
+        self.radio_button_1.clicked.connect(self.buttonClick)
+        self.radio_button_2.clicked.connect(self.buttonClick)
+
+    def buttonClick(self):
+        send = self.sender()
+        if send.text() == 'cat':
+            self._iterator.setclassName(send.text())
+            self._iterator.getclassName()
+        elif send.text() == 'dog':
+            self._iterator.setclassName(send.text())
+            self._iterator.getclassName()
+
+    def nextButt(self, ) -> None:
+        try:
+            tmp = os.path.join(os.path.join(self._iterator.dataset, self._iterator.pathdir, self._iterator.classname),
+                               self._iterator.__next__())
+            print(tmp)
+            self._pixelmap = QPixmap(f"{tmp}").scaledToWidth(400).scaledToHeight(400)
+            self._lable.setPixmap(self._pixelmap)
+            print(tmp)
+        except:
+            reply = QMessageBox.question(self, 'End img',
+                                         "null", QMessageBox.Yes |
+                                         QMessageBox.No, QMessageBox.Yes)
+            if reply == QMessageBox.Yes:
+                self._iterator.clear()
+            print("!!!ERR!!!")
+
+    def buttClose(self):
+        self.close()
+
 
 if __name__ == "__main__":
     import sys
