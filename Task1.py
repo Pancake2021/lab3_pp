@@ -1,8 +1,11 @@
 import os
 import csv
+from typing import Optional, Union
 
 
-def create_csv_annotation(dataset: str, class_name: str, annotation_name: str) -> None:
+def create_csv_annotation(dataset: str, class_name: str, annotation_name: str) -> Union[str, None]:
+    '''This function create csv annotation with 3 parameters: absolute path to file, relative path and file's class
+    name'''
     path_to_class = os.path.join(dataset, 'dataset', class_name)
     class_names = os.listdir(path_to_class)
     with open(annotation_name, mode="w", newline='') as file:
@@ -12,5 +15,5 @@ def create_csv_annotation(dataset: str, class_name: str, annotation_name: str) -
                 [os.path.abspath(name), os.path.join('dataset', class_name, name), class_name])
 
 
-def run1(dataset: str, class_name: str, annotation_name: str) -> None:
+def run1(dataset: str, class_name: str, annotation_name: str) -> Union[str, None]:
     create_csv_annotation(dataset, class_name, annotation_name)

@@ -1,15 +1,18 @@
-import shutil
 import os
 import csv
+import shutil
+from typing import Optional, Union
 
 
-def create_dir(dir_name: str) -> str:
+def create_dir(dir_name: str) -> Union[str, None]:
+    '''creating a directory'''
     if not os.path.isdir(dir_name):
         os.mkdir(dir_name)
     return dir_name
 
 
-def create_copy_dataset(dataset: str, dir_copy: str, annotation_name: str) -> None:
+def create_copy_dataset(dataset: str, dir_copy: str, annotation_name: str) -> Union[str, None]:
+    '''creating a copy of the dataset'''
     create_dir(dir_copy)
     for dataset_item in os.listdir(os.path.join(dataset,"dataset")):
         files_list = os.listdir(os.path.join(dataset,"dataset", dataset_item))
@@ -22,5 +25,5 @@ def create_copy_dataset(dataset: str, dir_copy: str, annotation_name: str) -> No
                 file_writer.writerow([f"{dataset_item}_{file_name}", dataset_item])
 
 
-def run2(dataset: str, dir_copy: str, annotation_name: str) -> None:
+def run2(dataset: str, dir_copy: str, annotation_name: str) -> Union[str, None]:
     create_copy_dataset(dataset, dir_copy, annotation_name)
